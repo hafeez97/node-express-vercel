@@ -1,25 +1,58 @@
-// Import packages
-const express = require("express");
-// const home = require("./routes/home");
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-// Middlewares
 const app = express();
-app.use(express.json());
 
-// Routes
-// app.use("/home", home);
+// Allow cross-origin requests
+app.use(cors());
 
-app.get('/', (req, res) => {
-    res.send('Webhook App is running!');
+// Parse incoming request bodies in a middleware before the handlers
+app.use(bodyParser.json());
+
+// In-memory store for webhook data and their timeouts
+let webhookData = {};
+
+// Handle incoming requests for data with a specific ID
+app.get('/getData/:id', async (req, res) => {
+  const id = req.params.id;
+  console.log(`Client requested data for ID ${id}`);
+
+  // Check if there is any data in the webhookData object for the requested ID
+  if (webhookData[id]) {
+    // Send the data to the client
+    res.status(200).json(webhookData[id]);
+
+    // Keep the data in the webhookData object, so it can be requested again if needed
+  } else {
+    // If there is no data, send a 404 error to the client
+    res.sendStatus(404);
+  }
 });
 
-app.post('/webhook', (req, res) => {
-    console.log('Received a webhook request:', req.body);
-    // handle the webhook request here
-    console.log(req.body);
-    res.sendStatus(200);
+// Handle incoming webhook data
+app.post('/webhook', async (req, res) => {
+  console.log('Webhook data received:', req.body);
+
+  // Extract the ID from the incoming data object
+  const id = req.body.originatingMessageId;
+
+  // Add the incoming data to the webhookData object
+  if (!webhookData[id]) {
+    webhookData[id] = [];
+  }
+
+  webhookData[id].push(req.body);
+
+  // Set a timeout to delete the data after 5 minutes
+  setTimeout(() => {
+    delete webhookData[id];
+  }, 5 * 60 * 1000);
+
+  res.sendStatus(200);
 });
 
-// connection
-const port = process.env.PORT || 9001;
-app.listen(port, () => console.log(`Listening to port ${port}`));
+// Start the server
+app.listen(3001, () => {
+  console.log('Server listening on port 3001');
+});
