@@ -13,6 +13,10 @@ app.use(bodyParser.json());
 // In-memory store for webhook data
 let webhookData = {};
 
+app.get('/', (req, res) => {
+  res.send('Server is ON!'); // Send a response to the client
+});
+
 // Handle incoming requests for data with a specific ID
 app.get('/getData/:id', async (req, res) => {
   const id = req.params.id;
