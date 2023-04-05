@@ -14,12 +14,12 @@ app.use(bodyParser.json());
 let webhookData = {};
 
 app.get('/', (req, res) => {
-  res.send('Server is ON!'); // Send a response to the client
+  res.send('Server is working!'); // Send a response to the client
 });
 
 // Handle incoming requests for data with a specific ID
 app.get('/getData/:id', async (req, res) => {
-  res.send("hello")
+
   const id = req.params.id;
   console.log(`Client requested data for ID ${id}`);
 
