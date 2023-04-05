@@ -17,43 +17,21 @@ app.get('/', (req, res) => {
   res.send('Server is working!'); // Send a response to the client
 });
 
-// Handle incoming requests for data with a specific ID
 app.get('/getData/:id', async (req, res) => {
-
-  const id = req.params.id;
-  console.log(`Client requested data for ID ${id}`);
-
-  // Check if there is any data in the webhookData object for the requested ID
-  if (webhookData[id]) {
-    // Send the data to the client
-    res.status(200).json(webhookData[id]);
-
-    // Remove the data from the webhookData object
-    delete webhookData[id];
-  } else {
-    // If there is no data, wait for the webhook to receive it
-    let dataPromise = new Promise(resolve => {
-      const intervalId = setInterval(() => {
-        if (webhookData[id]) {
-          clearInterval(intervalId);
-          resolve(webhookData[id]);
-
-          // Remove the data from the webhookData object
-          delete webhookData[id];
-        }
-      }, 1000);
-    });
-
-    // Wait for the data and then send it to the client
-    try {
-      const data = await dataPromise;
-      res.status(200).json(data);
-    } catch (error) {
-      // If there is still no data after 2 minutes, send a 404 error to the client
+    const id = req.params.id;
+    console.log(`Client requested data for ID ${id}`);
+  
+    // Check if there is any data in the webhookData object for the requested ID
+    if (webhookData[id]) {
+      // Send the data to the client
+      res.status(200).json(webhookData[id]);
+  
+      // Keep the data in the webhookData object, so it can be requested again if needed
+    } else {
+      // If there is no data, send a 404 error to the client
       res.sendStatus(404);
     }
-  }
-});
+  });
 
 // Handle incoming webhook data
 app.post('/webhook', async (req, res) => {
