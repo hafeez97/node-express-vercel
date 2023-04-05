@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 
 // Handle incoming requests for data with a specific ID
 app.get('/getData/:id', async (req, res) => {
+  res.send("hello")
   const id = req.params.id;
   console.log(`Client requested data for ID ${id}`);
 
