@@ -59,17 +59,12 @@ app.get('/getData/:id', async (req, res) => {
 app.post('/webhook', async (req, res) => {
   console.log('Webhook data received:', req.body);
 
-  const id = req.body.originatingMessageId;
-
-  if (!webhookData[id]) {
-    webhookData[id] = [];
+  // Add the incoming data to the webhookData object
+  if (!webhookData[req.body.id]) {
+    webhookData[req.body.id] = [];
   }
-  webhookData[id].push(req.body);
 
-  // Set a timeout to delete the data after 5 minutes
-//   setTimeout(() => {
-//     delete webhookData[id];
-//   }, 5 * 60 * 1000);
+  webhookData[req.body.id].push(req.body);
 
   res.sendStatus(200);
 });
