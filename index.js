@@ -26,7 +26,6 @@ app.get('/getData/:id', async (req, res) => {
       // Send the data to the client
       res.status(200).json(webhookData[id]);
   
-      // Keep the data in the webhookData object, so it can be requested again if needed
     } else {
       // If there is no data, send a 404 error to the client
       res.sendStatus(404);
@@ -43,11 +42,6 @@ app.post('/webhook', async (req, res) => {
     webhookData[id] = [];
   }
   webhookData[id].push(req.body);
-
-  // Set a timeout to delete the data after 5 minutes
-//   setTimeout(() => {
-//     delete webhookData[id];
-//   }, 5 * 60 * 1000);
 
   res.sendStatus(200);
 });
