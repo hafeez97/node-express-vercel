@@ -63,22 +63,22 @@ app.get('/getData/:id', async (req, res) => {
 });
 
 
-// // Handle incoming requests for data with a specific ID
-// app.get('/getData/:id', async (req, res) => {
-//   const id = req.params.id;
-//   console.log(`Client requested data for ID ${id}`);
+// Handle incoming requests for data with a specific ID
+app.get('/getDataRec/:id', async (req, res) => {
+  const id = req.params.id;
+  console.log(`Client requested data for ID ${id}`);
 
-//   // Check if there is any data in the webhookData object for the requested ID
-//   if (webhookData[id]) {
-//     // Send the data to the client
-//     res.status(200).json(webhookData[id]);
+  // Check if there is any data in the webhookData object for the requested ID
+  if (webhookData[id]) {
+    // Send the data to the client
+    res.status(200).json(webhookData[id]);
 
-//     // Keep the data in the webhookData object, so it can be requested again if needed
-//   } else {
-//     // If there is no data, send a 404 error to the client
-//     res.sendStatus(404);
-//   }
-// });
+    // Keep the data in the webhookData object, so it can be requested again if needed
+  } else {
+    // If there is no data, send a 404 error to the client
+    res.sendStatus(404);
+  }
+});
 
 // Handle incoming webhook data
 app.post('/webhook', async (req, res) => {
